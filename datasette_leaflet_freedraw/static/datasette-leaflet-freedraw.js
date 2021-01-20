@@ -30,17 +30,19 @@ function configureMap(input) {
   let allPoints = [];
   try {
     let existing = JSON.parse(input.value);
+    let pointsToDraw = [];
     if (existing.type == "MultiPolygon") {
       window.existing = existing;
-      map.addLayer(freeDraw);
       existing.coordinates.forEach(([outers, inners]) => {
         let points = outers.map(
           ([longitude, latitude]) => new L.LatLng(latitude, longitude)
         );
-        freeDraw.create(points);
+        pointsToDraw.push(points);
         allPoints.push(...points);
       });
       map.fitBounds(allPoints);
+      map.addLayer(freeDraw);
+      pointsToDraw.forEach(points => freeDraw.create(points));
     }
   } catch (e) {}
   if (!allPoints.length) {

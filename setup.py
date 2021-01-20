@@ -33,7 +33,7 @@ setup(
     tests_require=["datasette-leaflet-freedraw[test]"],
     package_data={
         "datasette_leaflet_freedraw": [
-            "static/leaflet-freedraw.web.js",
+            "static/*.js",
         ],
     },
     python_requires=">=3.6",

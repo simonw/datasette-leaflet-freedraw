@@ -13,6 +13,8 @@ Install this plugin in the same environment as Datasette.
 
     $ datasette install datasette-leaflet-freedraw
 
+Note that this uses a feature that will be released in Datasette 0.54 - so it currently requires the Datasette 0.54a0 alpha.
+
 ## Usage
 
 This plugin looks for input fields on a page with names ending in `_freedraw` - it replaces them with a Leaflet map interface that includes the [FreeDraw](https://freedraw.herokuapp.com/) Leaflet plugin.

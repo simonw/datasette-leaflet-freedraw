@@ -34,6 +34,7 @@ setup(
     package_data={
         "datasette_leaflet_freedraw": [
             "static/*.js",
+            "static/*.css",
         ],
     },
     python_requires=">=3.6",

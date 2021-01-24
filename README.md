@@ -7,6 +7,8 @@
 
 Draw polygons on maps in Datasette
 
+Project background: [Drawing shapes on a map to query a SpatiaLite database](https://simonwillison.net/2021/Jan/24/drawing-shapes-spatialite/).
+
 ## Installation
 
 Install this plugin in the same environment as Datasette.

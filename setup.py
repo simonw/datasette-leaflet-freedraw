@@ -35,6 +35,7 @@ setup(
         "datasette_leaflet_freedraw": [
             "static/*.js",
             "static/*.css",
+            "static/*.js.map",
         ],
     },
     python_requires=">=3.6",

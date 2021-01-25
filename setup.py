@@ -1,7 +1,7 @@
 from setuptools import setup
 import os
 
-VERSION = "0.1.4"
+VERSION = "0.2"
 
 
 def get_long_description():
@@ -28,7 +28,7 @@ setup(
     version=VERSION,
     packages=["datasette_leaflet_freedraw"],
     entry_points={"datasette": ["leaflet_freedraw = datasette_leaflet_freedraw"]},
-    install_requires=["datasette"],
+    install_requires=["datasette>=0.54", "datasette-leaflet"],
     extras_require={"test": ["pytest", "pytest-asyncio"]},
     tests_require=["datasette-leaflet-freedraw[test]"],
     package_data={

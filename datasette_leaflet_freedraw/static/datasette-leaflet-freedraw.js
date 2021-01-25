@@ -1,5 +1,5 @@
-DATASETTE_TILE_LAYER = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-DATASETTE_TILE_LAYER_OPTIONS = {
+let DATASETTE_TILE_LAYER = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+let DATASETTE_TILE_LAYER_OPTIONS = {
   maxZoom: 19,
   detectRetina: true,
   attribution:
@@ -11,7 +11,26 @@ window.addEventListener("load", () => {
     ...document.querySelectorAll("input[name=freedraw]"),
     ...document.querySelectorAll("input[name$=_freedraw]"),
   ];
-  inputs.forEach(configureMap);
+  /* Load modules and CSS */
+  const loadDependencies = (callback) => {
+    let loaded = [];
+    function hasLoaded() {
+      loaded.push(this);
+      if (loaded.length == 3) {
+        callback();
+      }
+    }
+    let stylesheet = document.createElement("link");
+    stylesheet.setAttribute("rel", "stylesheet");
+    stylesheet.setAttribute("href", datasette.leaflet.CSS_URL);
+    stylesheet.onload = hasLoaded;
+    document.head.appendChild(stylesheet);
+    import(datasette.leaflet.JAVASCRIPT_URL).then(hasLoaded);
+    import(datasette.leaflet_freedraw.FREEDRAW_URL).then(hasLoaded);
+  };
+  loadDependencies(() => {
+    inputs.forEach(configureMap);
+  });
 });
 
 function configureMap(input) {
@@ -42,7 +61,7 @@ function configureMap(input) {
       });
       map.fitBounds(allPoints);
       map.addLayer(freeDraw);
-      pointsToDraw.forEach(points => freeDraw.create(points));
+      pointsToDraw.forEach((points) => freeDraw.create(points));
     }
   } catch (e) {}
   if (!allPoints.length) {

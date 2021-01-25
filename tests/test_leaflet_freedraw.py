@@ -1,4 +1,5 @@
 from datasette.app import Datasette
+from datasette_leaflet_freedraw import extra_body_script, extra_js_urls
 import pytest
 
 
@@ -17,8 +18,6 @@ async def test_plugin_is_installed():
     [
         "datasette-leaflet-freedraw.js",
         "leaflet-freedraw.esm.js",
-        "leaflet.js",
-        "leaflet.css",
     ],
 )
 async def test_plugin_scripts(script):
@@ -27,3 +26,23 @@ async def test_plugin_scripts(script):
         "/-/static-plugins/datasette-leaflet-freedraw/{}".format(script)
     )
     assert 200 == response.status_code
+
+
+def test_extra_template_vars():
+    assert extra_js_urls(
+        datasette=Datasette([], memory=True), view_name="database"
+    ) == [
+        {
+            "url": "/-/static-plugins/datasette-leaflet-freedraw/datasette-leaflet-freedraw.js",
+            "module": True,
+        }
+    ]
+
+
+def test_extra_body_script():
+    assert extra_body_script(datasette=Datasette([], memory=True)).strip() == (
+        "window.datasette = window.datasette || {};\n"
+        "datasette.leaflet_freedraw = {\n"
+        "    FREEDRAW_URL: '/-/static-plugins/datasette-leaflet-freedraw/leaflet-freedraw.esm.js',\n"
+        "};"
+    )

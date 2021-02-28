@@ -108,7 +108,7 @@ function configureMap(input) {
     let geojson = {
       type: "MultiPolygon",
       coordinates: event.latLngs.map((shape) => [
-        shape.map((p) => [p.lng, p.lat]),
+        shape.map((p) => [p.lng.toFixed(6), p.lat.toFixed(6)]),
       ]),
     };
     input.value = JSON.stringify(geojson);

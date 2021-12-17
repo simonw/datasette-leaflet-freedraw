@@ -7,10 +7,31 @@ let DATASETTE_TILE_LAYER_OPTIONS = {
 };
 
 window.addEventListener("load", () => {
+  /* Only run and load dependencies if either there's a input[name=...freedraw]
+     or there is an explicit datasette.leaflet_freedraw.show_for_table = true */
+  if (datasette.leaflet_freedraw.show_for_table) {
+    // Insert a name=freedraw input element
+    let input = document.createElement("input");
+    input.setAttribute("name", "_freedraw");
+    input.setAttribute("type", "text");
+    input.setAttribute("placeholder", "Map GeoJSON");
+    document.querySelector("form.filters").appendChild(input);
+    if (datasette.leaflet_freedraw.current_geojson) {
+      input.value = JSON.stringify(datasette.leaflet_freedraw.current_geojson);
+    }
+    // And remove any existing hidden inputs
+    Array.from(document.querySelectorAll("input[name=_freedraw][type=hidden]")).forEach(el => {
+      el.parentNode.removeChild(el);
+    });
+  }
   let inputs = [
-    ...document.querySelectorAll("input[name=freedraw]"),
-    ...document.querySelectorAll("input[name$=_freedraw]"),
+    ...document.querySelectorAll("input[name=freedraw][type=text]"),
+    ...document.querySelectorAll("input[name$=_freedraw][type=text]"),
   ];
+  if (!inputs.length) {
+    return;
+  }
+  console.log({inputs})
   /* Load modules and CSS */
   const loadDependencies = (callback) => {
     let loaded = [];

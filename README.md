@@ -17,9 +17,11 @@ Install this plugin in the same environment as Datasette.
 
 ## Usage
 
-This plugin looks for input fields on a page with names ending in `_freedraw` - it replaces them with a Leaflet map interface that includes the [FreeDraw](https://freedraw.herokuapp.com/) Leaflet plugin.
+If a table has a SpatiaLite `geometry` column, the plugin will add a map interface to the table page allowing users to draw a shape on the map to find rows with a geometry that intersects that shape.
 
-Configure canned queries with inputs called `freedraw` or ending in `_freedraw` to trigger the map interface.
+The plugin can also work with arbitrary SQL queries. There it looks for input fields with a name of `freedraw` or that ends in `_freedraw` and replaces them with a map interface.
+
+The map interface uses the [FreeDraw](https://freedraw.herokuapp.com/) Leaflet plugin.
 
 ## Demo
 

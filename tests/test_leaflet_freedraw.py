@@ -1,4 +1,5 @@
 from datasette.app import Datasette
+from datasette.utils.asgi import Request
 from datasette_leaflet_freedraw import extra_body_script, extra_js_urls
 import pytest
 
@@ -39,10 +40,20 @@ def test_extra_template_vars():
     ]
 
 
-def test_extra_body_script():
-    assert extra_body_script(datasette=Datasette([], memory=True)).strip() == (
+@pytest.mark.asyncio
+async def test_extra_body_script():
+    assert (
+        await extra_body_script(
+            datasette=Datasette([], memory=True),
+            request=Request.fake("/"),
+            database=None,
+            table=None,
+        )()
+    ).strip() == (
         "window.datasette = window.datasette || {};\n"
         "datasette.leaflet_freedraw = {\n"
         "    FREEDRAW_URL: '/-/static-plugins/datasette-leaflet-freedraw/leaflet-freedraw.esm.js',\n"
+        "    show_for_table: false,\n"
+        "    current_geojson: null\n"
         "};"
     )

@@ -31,7 +31,6 @@ window.addEventListener("load", () => {
   if (!inputs.length) {
     return;
   }
-  console.log({inputs})
   /* Load modules and CSS */
   const loadDependencies = (callback) => {
     let loaded = [];

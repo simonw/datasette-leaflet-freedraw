@@ -28,7 +28,7 @@ setup(
     version=VERSION,
     packages=["datasette_leaflet_freedraw"],
     entry_points={"datasette": ["leaflet_freedraw = datasette_leaflet_freedraw"]},
-    install_requires=["datasette>=0.54", "datasette-leaflet>=0.2"],
+    install_requires=["datasette>=0.60a0", "datasette-leaflet>=0.2"],
     extras_require={"test": ["pytest", "pytest-asyncio"]},
     tests_require=["datasette-leaflet-freedraw[test]"],
     package_data={

@@ -1,5 +1,6 @@
 from datasette import hookimpl
 from datasette.filters import FilterArguments
+from jinja2.utils import htmlsafe_json_dumps
 import json
 import textwrap
 
@@ -59,7 +60,7 @@ def filters_from_request(request, database, table, datasette):
 
 @hookimpl
 def extra_js_urls(view_name, datasette):
-    if view_name == "database":
+    if view_name in ("database", "table"):
         return [
             {
                 "url": datasette.urls.static_plugins(
@@ -71,16 +72,35 @@ def extra_js_urls(view_name, datasette):
 
 
 @hookimpl
-def extra_body_script(datasette):
-    return textwrap.dedent(
-        """
-    window.datasette = window.datasette || {{}};
-    datasette.leaflet_freedraw = {{
-        FREEDRAW_URL: '{}',
-    }};
-    """.format(
-            datasette.urls.static_plugins(
-                "datasette-leaflet-freedraw", "leaflet-freedraw.esm.js"
-            ),
+def extra_body_script(request, datasette, database, table):
+    async def inner():
+        has_geometry = False
+        if table:
+            has_geometry = bool(
+                await geometry_columns_for_table(datasette, database, table)
+            )
+        current_geojson = None
+        freedraw = request.args.get("_freedraw")
+        if freedraw:
+            try:
+                current_geojson = json.loads(freedraw)
+            except ValueError:
+                pass
+        return textwrap.dedent(
+            """
+        window.datasette = window.datasette || {{}};
+        datasette.leaflet_freedraw = {{
+            FREEDRAW_URL: '{}',
+            show_for_table: {},
+            current_geojson: {}
+        }};
+        """.format(
+                datasette.urls.static_plugins(
+                    "datasette-leaflet-freedraw", "leaflet-freedraw.esm.js"
+                ),
+                "true" if has_geometry else "false",
+                htmlsafe_json_dumps(current_geojson),
+            )
         )
-    )
+
+    return inner

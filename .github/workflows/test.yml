@@ -24,9 +24,13 @@ jobs:
     - name: Install SpatiaLite
       run: |
         sudo apt-get install libsqlite3-mod-spatialite
-    - name: Install dependencies
+    - name: Build the package wheel
       run: |
-        pip install -e '.[test]'
+        pip install build
+        python -m build
+    - name: Install test dependencies and package from wheel
+      run: |
+        pip install pytest pytest-asyncio dist/*.whl
     - name: Run tests
       run: |
         pytest

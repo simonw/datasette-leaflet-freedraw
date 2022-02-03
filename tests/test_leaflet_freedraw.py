@@ -83,6 +83,7 @@ async def test_extra_body_script():
         ),
     ),
 )
+@pytest.mark.skipif(find_spatialite() is None, reason="Could not find SpatiaLite")
 async def test_show_for_table_only_if_spatialite(
     table, expect_map, expect_spatial_index
 ):

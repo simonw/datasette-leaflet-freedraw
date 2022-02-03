@@ -1,10 +1,18 @@
 from datasette.app import Datasette
 from datasette.utils.sqlite import sqlite3
 from datasette.utils.asgi import Request
-from datasette.utils import find_spatialite
+from datasette.utils import find_spatialite, SpatialiteNotFound
 from datasette_leaflet_freedraw import extra_body_script, extra_js_urls
 import pytest
 import secrets
+
+
+def has_spatialite():
+    try:
+        find_spatialite()
+        return True
+    except SpatialiteNotFound:
+        return False
 
 
 @pytest.mark.asyncio
@@ -83,7 +91,7 @@ async def test_extra_body_script():
         ),
     ),
 )
-@pytest.mark.skipif(find_spatialite() is None, reason="Could not find SpatiaLite")
+@pytest.mark.skipif(not has_spatialite(), reason="Could not find SpatiaLite")
 async def test_show_for_table_only_if_spatialite(
     table, expect_map, expect_spatial_index
 ):

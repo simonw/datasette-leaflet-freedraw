@@ -71,6 +71,23 @@ async def test_extra_body_script():
 
 
 @pytest.mark.asyncio
+async def test_did_not_break_table_page():
+    # https://github.com/simonw/datasette-leaflet-freedraw/issues/11
+    dbname = "db{}".format(secrets.token_hex(4))
+    datasette = Datasette(memory=True, files=[])
+    db = datasette.add_memory_database(dbname)
+
+    def setup(db):
+        db.execute(
+            "CREATE TABLE places_no_spatialite (id integer primary key, name text)"
+        )
+
+    await db.execute_write_fn(setup, block=True)
+    response = await datasette.client.get("/{}/places_no_spatialite".format(dbname))
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "table,expect_map,expect_spatial_index",
     (

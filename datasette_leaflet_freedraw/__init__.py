@@ -1,5 +1,6 @@
 from datasette import hookimpl
 from datasette.filters import FilterArguments
+from datasette.utils import sqlite3
 from jinja2.utils import htmlsafe_json_dumps
 import json
 import textwrap
@@ -13,10 +14,13 @@ async def geometry_columns_for_table(datasette, database, table):
         where lower(f_table_name) = lower(:table)
     """
     db = datasette.get_database(database)
-    return {
-        r["f_geometry_column"]: bool(r["spatial_index_enabled"])
-        for r in await db.execute(sql, {"table": table})
-    }
+    try:
+        return {
+            r["f_geometry_column"]: bool(r["spatial_index_enabled"])
+            for r in await db.execute(sql, {"table": table})
+        }
+    except sqlite3.OperationalError:
+        return {}
 
 
 @hookimpl
